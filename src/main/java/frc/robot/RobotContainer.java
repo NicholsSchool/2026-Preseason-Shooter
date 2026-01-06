@@ -6,6 +6,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONAVX;
+import frc.robot.subsystems.drive.GyroIORedux;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -15,22 +25,83 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
  */
 public class RobotContainer {
 
+  public final Drive drive;
+    //since it's testing, only one controller
+    public static CommandXboxController driveController = new CommandXboxController(0);
+
   public RobotContainer() {
-   
+    switch (Constants.getRobot()) {
+
+      case ROBOT_REAL:
+        // Real robot, kraken swerve for comp bot
+        drive =
+            new Drive(
+                new GyroIORedux(),
+                new ModuleIOTalonFX(0),
+                new ModuleIOTalonFX(1),
+                new ModuleIOTalonFX(2),
+                new ModuleIOTalonFX(3));
+        break;
+        
+      case ROBOT_REAL_FRANKENLEW:
+        //real robot, maxswerve and 
+        drive =
+            new Drive(
+                new GyroIONAVX(),
+                new ModuleIOMaxSwerve(0),
+                new ModuleIOMaxSwerve(1),
+                new ModuleIOMaxSwerve(2),
+                new ModuleIOMaxSwerve(3));
+        break;
+
+      case ROBOT_SIM:
+        // Sim robot, instantiate physics sim IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        break;
+
+        case ROBOT_CALIBRATE:
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        break;
+
+      case ROBOT_FOOTBALL:
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+        break;
+      default:
+        // Replayed robot, disable IO implementations since the replay
+        // will supply the data.
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
+
+        break;
+
     }
 
+      configureButtonBindings();
 
-
-  private void initShuffleboard() {
-   
-  }
-
-  public void updateShuffleboard() {
-   
-  }
-
-
-
+    }
  
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -39,7 +110,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    drive.setDefaultCommand(
+      DriveCommands.joystickDrive(
+          drive,
+          () -> -driveController.getLeftY() * Constants.DriveConstants.LOW_GEAR_SCALER,
+          () -> -driveController.getLeftX() * Constants.DriveConstants.LOW_GEAR_SCALER,
+          () -> -driveController.getRightX() * 0.55,
+          () -> Constants.DRIVE_ROBOT_RELATIVE));
   }
 
   // /**
@@ -55,7 +132,7 @@ public class RobotContainer {
         // return AutoBuilder.followPath(path);
           return new InstantCommand();
     } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        DriverStation.reportError("no autos: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
     }
 
