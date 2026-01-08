@@ -115,7 +115,7 @@ public class RobotContainer {
           drive,
           () -> -driveController.getLeftY() * Constants.DriveConstants.LOW_GEAR_SCALER,
           () -> -driveController.getLeftX() * Constants.DriveConstants.LOW_GEAR_SCALER,
-          () -> -driveController.getRightX() * 0.55,
+          () -> -driveController.getRightX() * Constants.DriveConstants.TURNING_SCALAR,
           () -> Constants.DRIVE_ROBOT_RELATIVE));
   }
 
@@ -150,7 +150,4 @@ public class RobotContainer {
     //registerNamedCommands();
     //return autoChooser.get();
   }
-
-  private void addAutos() {}
-
 }
