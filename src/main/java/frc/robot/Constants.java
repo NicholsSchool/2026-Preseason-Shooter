@@ -82,6 +82,13 @@ public final class Constants {
    
   }
 
+  public static final class ShooterConstants{
+    public static final double SHOOTER_RPM = 3000;
+    public static final double REVERSE_RPM = -3000;
+    public static final double P = 1.0; //This is a constant for position control
+    public static final double D = 0.0; //This is a constant for position control
+  }
+
   public static final class DriveConstants {
 
     public static final double MAX_LINEAR_SPEED = 3.2;
@@ -135,10 +142,6 @@ public final class Constants {
   }
 
   public static final class IntakeOuttakeConstants {
-
-  }
-
-  public static final class ShooterConstants{
 
   }
 
