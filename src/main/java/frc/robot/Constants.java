@@ -76,6 +76,8 @@ public final class Constants {
     public static final int kMaxRearLeftTurningCanId = 0;
 
     public static final int kMaxRearRightTurningCanId = 0;
+
+    public static final int CANDLE = 0;
   }
 
   public static final class RobotConstants {
@@ -101,6 +103,7 @@ public final class Constants {
 
     public static final double LOW_GEAR_SCALER = 0.6;
     public static final double TURNING_SCALAR = 0.55;
+    public static final double STARTING_ERROR = 0.1;
     
   }
 

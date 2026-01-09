@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
 
@@ -42,12 +43,18 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdleConfiguration;
+
 public class Drive extends SubsystemBase {
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final int kNumModules = 4;
   private final Module[] modules = new Module[kNumModules]; // FL, FR, BL, BR
+
+  private final CANdle candle;
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Pose2d odometryPose = new Pose2d();
@@ -56,6 +63,7 @@ public class Drive extends SubsystemBase {
   private Pose2d filteredPhotonPose2d = new Pose2d();
   private boolean coastRequest = false;
   private boolean isBrakeModeDrive = true;
+  private Pose2d startingPose = AllianceFlipUtil.apply(new Pose2d(new Translation2d(3,4),new Rotation2d()));
 
   private ArrayDeque<Pose2d> visionStatsBuffer;
   private PoseVisionStats poseVisionStats;
@@ -68,13 +76,15 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition(), new SwerveModulePosition(),
         new SwerveModulePosition(), new SwerveModulePosition()
       };
-
+  
   SwerveDrivePoseEstimator kalman =
       new SwerveDrivePoseEstimator(kinematics, lastGyroRotation, positions, odometryPose);
 
   @SuppressWarnings("deprecation")
   private final LoggedDashboardNumber moduleTestIndex = // drive module to test with voltage ramp
       new LoggedDashboardNumber("Module Test Index (0-3)", 0);
+
+  
 
   public Drive(
       GyroIO gyroIO,
@@ -87,9 +97,13 @@ public class Drive extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
-    
-
     visionStatsBuffer = new ArrayDeque<Pose2d>(Constants.VisionConstants.visionStatsNumBuffer);
+
+      candle = new CANdle(Constants.CAN.CANDLE);
+      CANdleConfiguration candleConfig = new CANdleConfiguration();
+      candleConfig.stripType = LEDStripType.RGB; // set the strip type to RGB
+      candleConfig.brightnessScalar = 0.5; // dim the LEDs to half brightness
+      candle.configAllSettings(candleConfig);
   }
 
   public void periodic() {
@@ -413,5 +427,19 @@ public class Drive extends SubsystemBase {
         visionPose = visionRobotPoseMeters;
         kalman.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
+  public void updateCandle(){
+    //if the bot is in range flash purple, if not point to where we have to move it 
+    Translation2d distance = startingPose.getTranslation().minus(getPose().getTranslation());
+    if(distance.getNorm() < DriveConstants.STARTING_ERROR){
+      candle.setLEDs(200,162,200);
+    }else{
+        //if not in range, assigning each LED in the center a vector and lighting the led up if distance * pose / |distance| is less than 50 degrees
+        //CTR IDs
+        // 1 2
+        // 6 5
+
+    }
   }
 }
