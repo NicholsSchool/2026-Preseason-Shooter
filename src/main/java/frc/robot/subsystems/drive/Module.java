@@ -59,7 +59,6 @@ public class Module {
                 Constants.ModuleConstants.TURNING_I,
                 Constants.ModuleConstants.TURNING_D);
         break;
-      case ROBOT_FOOTBALL:
       case ROBOT_SIM:
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
         driveFeedback = new PIDController(0.1, 0.0, 0.0);

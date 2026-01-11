@@ -30,7 +30,6 @@ public class Robot extends LoggedRobot {
 
     // Set up data receivers & replay source
     switch (Constants.getRobot()) {
-      case ROBOT_FOOTBALL:
       case ROBOT_REAL_FRANKENLEW:
       case ROBOT_REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")

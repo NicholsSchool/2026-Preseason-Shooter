@@ -16,6 +16,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,6 +30,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 public class RobotContainer {
 
   public final Drive drive;
+  public final Shooter shooter;
     //since it's testing, only one controller
     public static CommandXboxController driveController = new CommandXboxController(0);
 
@@ -41,6 +46,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(1),
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
+        shooter = new Shooter(new ShooterIOReal());
         break;
         
       case ROBOT_REAL_FRANKENLEW:
@@ -52,6 +58,7 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(1),
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
+        shooter = new Shooter(new ShooterIOReal());
         break;
 
       case ROBOT_SIM:
@@ -63,26 +70,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        break;
-
-        case ROBOT_CALIBRATE:
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
-        break;
-
-      case ROBOT_FOOTBALL:
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim(),
-                new ModuleIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
       default:
         // Replayed robot, disable IO implementations since the replay
@@ -94,7 +82,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-
+        shooter = new Shooter(new ShooterIOSim());
         break;
 
     }
@@ -117,6 +105,7 @@ public class RobotContainer {
           () -> -driveController.getLeftX() * Constants.DriveConstants.LOW_GEAR_SCALER,
           () -> -driveController.getRightX() * Constants.DriveConstants.TURNING_SCALAR,
           () -> Constants.DRIVE_ROBOT_RELATIVE));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stop(), shooter));
   }
 
   // /**

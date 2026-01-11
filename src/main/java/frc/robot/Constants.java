@@ -38,8 +38,6 @@ public final class Constants {
     ROBOT_REAL, // a real robot (JANICE)
     ROBOT_REPLAY, // data file replay (could be on real bot or simulation)
     ROBOT_SIM, // simulation
-    ROBOT_FOOTBALL, // Football for simulating
-    ROBOT_CALIBRATE
   }
 
   // CAN IDs (Controller Area Network)
@@ -76,6 +74,8 @@ public final class Constants {
     public static final int kMaxRearLeftTurningCanId = 0;
 
     public static final int kMaxRearRightTurningCanId = 0;
+
+    public static final int SHOOTER = 0;
   }
 
   public static final class RobotConstants {
@@ -87,6 +87,8 @@ public final class Constants {
     public static final double REVERSE_RPM = -3000;
     public static final double P = 1.0; //This is a constant for position control
     public static final double D = 0.0; //This is a constant for position control
+
+    public static double SHOOTER_MOTOR_CURRENT_LIMIT = 30.0;
   }
 
   public static final class DriveConstants {
