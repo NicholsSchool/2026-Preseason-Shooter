@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 
-
 import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 
@@ -14,11 +13,10 @@ public class ShooterIOReal implements ShooterIO {
     private TalonFX shooterMotor;
 
     public ShooterIOReal(){
-        shooterMotor = new TalonFX(CAN.SHOOTER);
-
+        shooterMotor = new TalonFX(CAN.SHOOTER,"shooter");
 
          var config = new TalonFXConfiguration();
-        config.CurrentLimits.StatorCurrentLimit = Constants.ShooterConstants.SHOOTER_MOTOR_CURRENT_LIMIT;
+        config.CurrentLimits.StatorCurrentLimit = 30.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         shooterMotor.getConfigurator().apply(config);
@@ -26,18 +24,13 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     public void updateInputs(ShooterIOInputs inputs){
-        inputs.velocityRPMs = shooterMotor.getVelocity().getValueAsDouble() * 60.0;
-        inputs.appliedVolts = shooterMotor.getSupplyVoltage().getValueAsDouble();
-        inputs.currentAmps = shooterMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentAmps = shooterMotor.getStatorCurrent().getValueAsDouble();
+        inputs.supplyVoltage = shooterMotor.getSupplyVoltage().getValueAsDouble();
+        inputs.velocityRPM = shooterMotor.getVelocity().getValueAsDouble() * 60.0;
     }
 
     @Override
     public void setVoltage(double voltage){
         shooterMotor.setVoltage(voltage);
-    }
-
-    @Override
-    public void stop(){
-        shooterMotor.setVoltage(0.0);
     }
 }

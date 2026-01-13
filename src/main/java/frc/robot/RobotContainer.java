@@ -1,11 +1,13 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -16,6 +18,12 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOMaxSwerve;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.redirector.Redirector;
+import frc.robot.subsystems.redirector.RedirectorIOReal;
+import frc.robot.subsystems.redirector.RedirectorIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
@@ -31,6 +39,8 @@ public class RobotContainer {
 
   public final Drive drive;
   public final Shooter shooter;
+  public final Redirector redirector;
+  public final Indexer indexer;
     //since it's testing, only one controller
     public static CommandXboxController driveController = new CommandXboxController(0);
 
@@ -47,6 +57,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(2),
                 new ModuleIOTalonFX(3));
         shooter = new Shooter(new ShooterIOReal());
+        redirector = new Redirector(new RedirectorIOReal());
+        indexer = new Indexer(new IndexerIOReal());
         break;
         
       case ROBOT_REAL_FRANKENLEW:
@@ -59,6 +71,8 @@ public class RobotContainer {
                 new ModuleIOMaxSwerve(2),
                 new ModuleIOMaxSwerve(3));
         shooter = new Shooter(new ShooterIOReal());
+        redirector = new Redirector(new RedirectorIOSim());
+        indexer = new Indexer(new IndexerIOReal());
         break;
 
       case ROBOT_SIM:
@@ -71,6 +85,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        redirector = new Redirector(new RedirectorIOSim());
+        indexer = new Indexer(new IndexerIOSim());
         break;
       default:
         // Replayed robot, disable IO implementations since the replay
@@ -83,6 +99,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         shooter = new Shooter(new ShooterIOSim());
+        redirector = new Redirector(new RedirectorIOSim());
+        indexer = new Indexer(new IndexerIOSim());
         break;
 
     }
@@ -105,7 +123,20 @@ public class RobotContainer {
           () -> -driveController.getLeftX() * Constants.DriveConstants.LOW_GEAR_SCALER,
           () -> -driveController.getRightX() * Constants.DriveConstants.TURNING_SCALAR,
           () -> Constants.DRIVE_ROBOT_RELATIVE));
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stop(), shooter));
+      driveController.rightTrigger(0.9).whileTrue(new InstantCommand(() -> shooter.setVoltage(11.0), shooter).repeatedly());
+     driveController.leftTrigger(0.9).whileTrue(new InstantCommand(() -> shooter.setVoltage(3.0), shooter).repeatedly());
+     shooter.setDefaultCommand(new InstantCommand(() -> shooter.setVoltage(0.0),shooter));
+
+    driveController.a().onTrue(new InstantCommand(() -> redirector.setSetpointRad(0.0)));
+    driveController.b().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(20.0))));
+    driveController.x().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(10.0))));
+    driveController.y().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(25.0))));
+
+    indexer.setDefaultCommand(new InstantCommand(() -> indexer.stop(), indexer));
+    driveController.povDown().whileTrue(new RepeatCommand( new InstantCommand( () -> indexer.indexerTele(), indexer )));
+    
+
+  //redirector.setDefaultCommand(new InstantCommand(() -> redirector.setVoltage(driveController.getRightY()), redirector));
   }
 
   // /**

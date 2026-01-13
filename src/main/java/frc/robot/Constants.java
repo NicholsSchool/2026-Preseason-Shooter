@@ -59,23 +59,24 @@ public final class Constants {
       public static final int FRONT_RIGHT_ENCODER = 32;
       public static final int BACK_RIGHT_ENCODER = 31;
 
-      public static final int kMaxFrontLeftDrivingCanId = 0;
+      public static int kMaxFrontLeftDrivingCanId = 24;
+      public static int kMaxFrontRightDrivingCanId = 26;
+      public static int kMaxRearLeftDrivingCanId = 22;
+      public static int kMaxRearRightDrivingCanId = 28;
+      
+      public static int kMaxFrontLeftTurningCanId = 23;
+      public static int kMaxFrontRightTurningCanId = 25;
+      public static int kMaxRearLeftTurningCanId = 21;
+      public static int kMaxRearRightTurningCanId = 27;
 
-    public static final int kMaxFrontRightDrivingCanId = 0;
+    public static final int SHOOTER = 43;
 
-    public static final int kMaxRearRightDrivingCanId = 0;
+    public static final int REDIRECTOR = 41;
 
-    public static final int kMaxRearLeftDrivingCanId = 0;
+    public static final int REDIRECTOR_ENCODER = 40;
 
-    public static final int kMaxFrontLeftTurningCanId = 0;
+    public static final int INDEXER = 42;
 
-    public static final int kMaxFrontRightTurningCanId = 0;
-
-    public static final int kMaxRearLeftTurningCanId = 0;
-
-    public static final int kMaxRearRightTurningCanId = 0;
-
-    public static final int SHOOTER = 0;
   }
 
   public static final class RobotConstants {
@@ -83,12 +84,19 @@ public final class Constants {
   }
 
   public static final class ShooterConstants{
-    public static final double SHOOTER_RPM = 3000;
-    public static final double REVERSE_RPM = -3000;
-    public static final double P = 1.0; //This is a constant for position control
-    public static final double D = 0.0; //This is a constant for position control
 
     public static double SHOOTER_MOTOR_CURRENT_LIMIT = 30.0;
+  }
+
+  public static final class RedirectorConstants{
+
+    public static final double RedirectorMaxAccelerationRad = 200;
+    public static final double RedirectorMaxVelocityRad = 2000;
+    public static final double kRedirectorP = 1.8;
+    public static final double kRedirectorI = 0;
+    public static final double kRedirectorD = 0.0;
+    public static final double REDIRECTOR_MOTOR_CURRENT_LIMIT = 30.0;
+
   }
 
   public static final class DriveConstants {
