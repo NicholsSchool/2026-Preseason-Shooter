@@ -28,6 +28,10 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +45,7 @@ public class RobotContainer {
   public final Shooter shooter;
   public final Redirector redirector;
   public final Indexer indexer;
+    public final Vision vision;
     //since it's testing, only one controller
     public static CommandXboxController driveController = new CommandXboxController(0);
 
@@ -59,6 +64,10 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOReal());
         redirector = new Redirector(new RedirectorIOReal());
         indexer = new Indexer(new IndexerIOReal());
+         vision =
+             new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(frc.robot.subsystems.vision.VisionConstants.camera0Name, frc.robot.subsystems.vision.VisionConstants.robotToCamera0));
         break;
         
       case ROBOT_REAL_FRANKENLEW:
@@ -73,6 +82,10 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOReal());
         redirector = new Redirector(new RedirectorIOSim());
         indexer = new Indexer(new IndexerIOReal());
+        vision =
+        new Vision(
+           drive::addVisionMeasurement,
+           new VisionIOPhotonVision(frc.robot.subsystems.vision.VisionConstants.camera0Name, frc.robot.subsystems.vision.VisionConstants.robotToCamera0));
         break;
 
       case ROBOT_SIM:
@@ -87,6 +100,11 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOSim());
         redirector = new Redirector(new RedirectorIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        vision = new Vision(
+          drive::addVisionMeasurement,
+          new VisionIOPhotonVisionSim(frc.robot.subsystems.vision.VisionConstants.camera0Name,
+           frc.robot.subsystems.vision.VisionConstants.robotToCamera0, drive::getPose));
+       
         break;
       default:
         // Replayed robot, disable IO implementations since the replay
@@ -101,6 +119,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOSim());
         redirector = new Redirector(new RedirectorIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
 
     }
@@ -123,14 +142,9 @@ public class RobotContainer {
           () -> -driveController.getLeftX() * Constants.DriveConstants.LOW_GEAR_SCALER,
           () -> -driveController.getRightX() * Constants.DriveConstants.TURNING_SCALAR,
           () -> Constants.DRIVE_ROBOT_RELATIVE));
-      driveController.rightTrigger(0.9).whileTrue(new InstantCommand(() -> shooter.setVoltage(11.0), shooter).repeatedly());
-     driveController.leftTrigger(0.9).whileTrue(new InstantCommand(() -> shooter.setVoltage(3.0), shooter).repeatedly());
-     shooter.setDefaultCommand(new InstantCommand(() -> shooter.setVoltage(0.0),shooter));
-
-    driveController.a().onTrue(new InstantCommand(() -> redirector.setSetpointRad(0.0)));
-    driveController.b().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(20.0))));
-    driveController.x().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(10.0))));
-    driveController.y().onTrue(new InstantCommand(() -> redirector.setSetpointRad(Units.degreesToRadians(25.0))));
+      driveController.b().whileTrue(new InstantCommand(() -> shooter.setRPM(5000), shooter).repeatedly());
+     driveController.a().whileTrue(new InstantCommand(() -> shooter.setRPM(2000), shooter).repeatedly());
+     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stop(),shooter));
 
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stop(), indexer));
     driveController.povDown().whileTrue(new RepeatCommand( new InstantCommand( () -> indexer.indexerTele(), indexer )));

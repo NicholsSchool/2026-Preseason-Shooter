@@ -80,24 +80,24 @@ public final class FieldConstants {
               new AprilTag(
                   8,
                   new Pose3d(
-                      Units.inchesToMeters(530.49),
-                      Units.inchesToMeters(186.83),
-                      Units.inchesToMeters(12.13),
-                      new Rotation3d(0.0, 0.0, Units.degreesToRadians(60)))),
+                      4.0,
+                      3.0,
+                      Units.inchesToMeters(32.0),
+                      new Rotation3d(0.0, 0.0, Math.toDegrees(180.0)))),
               new AprilTag(
                   9,
                   new Pose3d(
-                      Units.inchesToMeters(497.77),
-                      Units.inchesToMeters(186.83),
-                      Units.inchesToMeters(12.13),
-                      new Rotation3d(0, 0.0, Units.degreesToRadians(120)))),
+                    4.0 + Units.inchesToMeters(22.0),
+                    3.0,
+                    Units.inchesToMeters(32.0),
+                    new Rotation3d(0.0, 0.0, Math.toDegrees(180.0)))),
               new AprilTag(
                   10,
                   new Pose3d(
                       Units.inchesToMeters(481.39),
                       Units.inchesToMeters(158.50),
                       Units.inchesToMeters(12.13),
-                      new Rotation3d(0, 0.0, Units.degreesToRadians(180)))),
+                      new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)))),
               new AprilTag(
                   11,
                   new Pose3d(

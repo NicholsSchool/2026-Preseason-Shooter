@@ -18,6 +18,10 @@ public class Shooter extends SubsystemBase {
     private ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
+    private double setpointRPM = 0.0;
+    private double voltageCmd = 0.0;
+    PIDController controller = new PIDController(ShooterConstants.kP, 0.0, ShooterConstants.kD);
+
     public Shooter (ShooterIO io){
         this.io = io;
     }
@@ -25,18 +29,38 @@ public class Shooter extends SubsystemBase {
     public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("shooter", inputs);
-    }
 
-    public void setVoltage(double volts){
-        io.setVoltage(volts);
+        if(setpointRPM == 0.0){
+            voltageCmd = 0.0;
+        }else{
+            voltageCmd += controller.calculate(inputs.velocityRPM, setpointRPM);
+        }
+
+        io.setVoltage(voltageCmd);
+
     }
     
+    public void setRPM(double setpoint){
+        setpointRPM = setpoint;
+        controller.reset();
+    }
+
+    @AutoLogOutput
+    public double getSetpointRPM(){
+        return setpointRPM;
+    }
+
+    @AutoLogOutput
+    public double getVoltageCmd(){
+        return voltageCmd;
+    }
+
     @AutoLogOutput
     public double getRPM(){
       return inputs.velocityRPM;
     }
 
     public void stop() {
-        io.setVoltage(0.0);
+        setRPM(0.0);
     }
 }

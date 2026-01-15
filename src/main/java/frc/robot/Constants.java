@@ -84,8 +84,10 @@ public final class Constants {
   }
 
   public static final class ShooterConstants{
-
+    public static double kP = 0.00001;
+    public static double kD = 0.0;
     public static double SHOOTER_MOTOR_CURRENT_LIMIT = 30.0;
+    public static double voltageClip = 3.0;
   }
 
   public static final class RedirectorConstants{
@@ -163,50 +165,50 @@ public final class Constants {
 
   }
 
-  public static final class VisionConstants {
-  // AprilTag layout
-  public static AprilTagFieldLayout APRILTAG_LAYOUT =
-      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+//   public static final class VisionConstants {
+//   // AprilTag layout
+//   public static AprilTagFieldLayout APRILTAG_LAYOUT =
+//       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  // Camera names, must match names configured on coprocessor
-  public static String CAMERA_ZERO_NAME = "Arducam_OV2311_USB_Camera-R";
-  public static String CAMERA_ONE_NAME = "Arducam_OV2311_USB_Camera-B";
+//   // Camera names, must match names configured on coprocessor
+//   public static String CAMERA_ZERO_NAME = "Arducam_OV2311_USB_Camera-R";
+//   public static String CAMERA_ONE_NAME = "Arducam_OV2311_USB_Camera-B";
 
-  // Robot to camera transforms
-  // (Not used by Limelight, configure in web UI instead)
-  public static Transform3d robotToCamera0 = new Transform3d();
-  public static Transform3d robotToCamera1 = new Transform3d();
+//   // Robot to camera transforms
+//   // (Not used by Limelight, configure in web UI instead)
+//   public static Transform3d robotToCamera0 = new Transform3d();
+//   public static Transform3d robotToCamera1 = new Transform3d();
 
-  // Basic filtering thresholds
-  public static double maxAmbiguity = 0.3;
-  public static double maxZError = 0.75;
+//   // Basic filtering thresholds
+//   public static double maxAmbiguity = 0.3;
+//   public static double maxZError = 0.75;
 
-  // Standard deviation baselines, for 1 meter distance and 1 tag
-  // (Adjusted automatically based on distance and # of tags)
-  public static double linearStdDevBaseline = 0.03; // Meters
-  public static double angularStdDevBaseline = 0.06; // Radians
+//   // Standard deviation baselines, for 1 meter distance and 1 tag
+//   // (Adjusted automatically based on distance and # of tags)
+//   public static double linearStdDevBaseline = 0.03; // Meters
+//   public static double angularStdDevBaseline = 0.06; // Radians
 
-  // Standard deviation multipliers for each camera
-  // (Adjust to trust some cameras more than others)
-  public static double[] cameraStdDevFactors =
-      new double[] {
-        1.0, // Camera 0
-        1.0 // Camera 1 
-      };
+//   // Standard deviation multipliers for each camera
+//   // (Adjust to trust some cameras more than others)
+//   public static double[] cameraStdDevFactors =
+//       new double[] {
+//         1.0, // Camera 0
+//         1.0 // Camera 1 
+//       };
 
-  // Multipliers to apply for MegaTag 2 observations
-  public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
-  public static double angularStdDevMegatag2Factor =
-      Double.POSITIVE_INFINITY; // No rotation data available
+//   // Multipliers to apply for MegaTag 2 observations
+//   public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
+//   public static double angularStdDevMegatag2Factor =
+//       Double.POSITIVE_INFINITY; // No rotation data available
 
-      public static final int initVisionCountTreshold = 100;
-      public static final double visionDistanceUpdateThreshold = 1.0; //meters
+//       public static final int initVisionCountTreshold = 100;
+//       public static final double visionDistanceUpdateThreshold = 1.0; //meters
   
-      public static final double tranlationPhotonStdDevs = 0.01;
-      public static final double rotationPhotonStdDevs = 0.005;
+//       public static final double tranlationPhotonStdDevs = 0.01;
+//       public static final double rotationPhotonStdDevs = 0.005;
   
-      public static final int visionStatsNumBuffer = 100;
-}
+//       public static final int visionStatsNumBuffer = 100;
+// }
 
 
 }

@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.BradyMathLib;
 import frc.robot.util.BradyMathLib.PoseVisionStats;
 
@@ -89,7 +90,7 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
     
 
-    visionStatsBuffer = new ArrayDeque<Pose2d>(Constants.VisionConstants.visionStatsNumBuffer);
+    visionStatsBuffer = new ArrayDeque<Pose2d>(VisionConstants.visionStatsNumBuffer);
   }
 
   public void periodic() {
@@ -387,7 +388,7 @@ public class Drive extends SubsystemBase {
   @SuppressWarnings("unused")
   private void runVisionStats( Pose2d newVisionPose ) {
       //update visionStatsBuffer, keeping the maximun num in at all times, default 100 for testing
-      if( visionStatsBuffer.size() >= Constants.VisionConstants.visionStatsNumBuffer )
+      if( visionStatsBuffer.size() >= VisionConstants.visionStatsNumBuffer )
         visionStatsBuffer.removeFirst();
       visionStatsBuffer.addLast(newVisionPose);
 
